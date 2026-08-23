@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1787515253|5964711';
+const CACHE_VERSION = '1787516194|6553277';
 /** @type {string} */
 const CACHE_PREFIX = 'Pidgu-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
@@ -21,7 +21,7 @@ const CACHEABLE_FILES = ["index.wasm","index.pck"];
 const FULL_CACHE = CACHED_FILES.concat(CACHEABLE_FILES);
 
 self.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CACHED_FILES)));
+	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(FULL_CACHE)));
 });
 
 self.addEventListener('activate', (event) => {
@@ -122,6 +122,9 @@ self.addEventListener(
 					}
 				}
 				let cached = await cache.match(event.request);
+				if (cached == null && isNavigate) {
+					cached = await cache.match(CACHED_FILES[0]);
+				}
 				if (cached != null) {
 					if (ENSURE_CROSSORIGIN_ISOLATION_HEADERS) {
 						cached = ensureCrossOriginIsolationHeaders(cached);
