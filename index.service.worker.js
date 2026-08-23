@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1787513312|5419253';
+const CACHE_VERSION = '1787513485|5545213';
 /** @type {string} */
 const CACHE_PREFIX = 'Pidgu-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
