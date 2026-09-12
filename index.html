@@ -110,9 +110,42 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.js"></script>
+		<script id="pidgu-save-journal">
+// A synchronous recovery copy alongside Godot's asynchronous IndexedDB save.
+// Never clears storage, changes the original save path, or reloads the page.
+(function (host) {
+  'use strict';
+  const key = 'pidgu.save.journal.v1:' + new URL('.', host.location.href).pathname;
+  function valid(text) {
+    try {
+      const value = JSON.parse(text);
+      return value && typeof value === 'object' && !Array.isArray(value)
+        && Number.isInteger(value.save_version) && value.save_version > 0
+        && Array.isArray(value.flock)
+        && Number.isFinite(value.crumbs) && Number.isFinite(value.keepsakes);
+    } catch (_) { return false; }
+  }
+  host.PidguSaveJournal = Object.freeze({
+    read() {
+      try {
+        const text = host.localStorage.getItem(key);
+        return valid(text) ? text : '';
+      } catch (_) { return ''; }
+    },
+    write(text) {
+      if (!valid(text)) return false;
+      try {
+        host.localStorage.setItem(key, text);
+        return host.localStorage.getItem(key) === text;
+      } catch (_) { return false; }
+    }
+  });
+})(window);
+
+</script>
+<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":true,"fileSizes":{"index.pck":20254944,"index.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[],"serviceWorker":"index.service.worker.js"};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":true,"fileSizes":{"index.pck":20256992,"index.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[],"serviceWorker":"index.service.worker.js"};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
